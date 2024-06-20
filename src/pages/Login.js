@@ -3,6 +3,12 @@ import {StyleSheet, css} from "aphrodite"
 import { useState } from "react";
 import PrimaryButton from "../components/button/PrimaryButton";
 import Checkbox from "../components/form/Checkbox";
+import { login } from "../actions/account/loginAction";
+import {connect} from 'react-redux';
+import Api from "../actions/Api";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 function Login(props) {
 
@@ -43,10 +49,11 @@ function Login(props) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    const handleSubmit = () => {
-        console.log(username);
-        console.log(password);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        props.login(username, password,navigate);
     }
     return (
         <div className={css(styles.container)}>
@@ -58,7 +65,7 @@ function Login(props) {
                     <h2>Login</h2>
                     <p>Masuk dengan akun anda</p>
                 </div>
-                <form className={css(styles.formGroup)} onSubmit={handleSubmit}>
+                <form className={css(styles.formGroup)} onSubmit={(e) => handleSubmit(e)}>
                     <TextField 
                         type="text"
                         label="Username"
@@ -85,4 +92,11 @@ function Login(props) {
     )
 }
 
-export default Login;
+
+function mapStateToProps({ authentication: { loggingIn } }) {
+    return {
+      loggingIn,
+    };
+  }
+  
+  export default connect(mapStateToProps, {login})((Login));

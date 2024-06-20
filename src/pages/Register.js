@@ -3,8 +3,14 @@ import { StyleSheet, css } from "aphrodite"
 import { useState } from "react";
 import PrimaryButton from "../components/button/PrimaryButton";
 import Checkbox from "../components/form/Checkbox";
+import { connect } from "react-redux";
+import { register } from "../actions/account/registerAction";
+import { registerUser } from "../reducers/account/registerReducer";
+import { useNavigate } from "react-router-dom";
 
-function Login(props) {
+
+
+function Register(props) {
 
     const styles = StyleSheet.create({
         container: {
@@ -42,13 +48,23 @@ function Login(props) {
     });
 
     const [username, setUsername] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
-    const handleSubmit = () => {
-        console.log(username);
-        console.log(password);
+    const navigate = useNavigate();
+    const handleSubmit = (e) => {
+       e.preventDefault();
+       
+       let formData = {
+        username : username,
+        name : name,
+        email : email,
+        password : password,
+        confirmPassword : confirmPassword,
+       }
+       props.register(formData, navigate);
+       
     }
     return (
         <div className={css(styles.container)}>
@@ -60,28 +76,39 @@ function Login(props) {
                     <h2>Register</h2>
                     <p>Daftarkan akun anda</p>
                 </div>
-                <form className={css(styles.formGroup)} onSubmit={handleSubmit}>
+                <form id="registerForm" className={css(styles.formGroup)} onSubmit={(e) => handleSubmit(e)}>
                     <TextField
                         type="text"
                         label="Username"
+                        name="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <TextField
+                        type="text"
+                        label="Name"
+                        name="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <TextField
                         type="email"
                         label="Email"
+                        name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         type="password"
                         label="Password"
+                        name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <TextField
                         type="password"
                         label="Konfirmasi Password"
+                        name="confirm_password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
@@ -96,4 +123,10 @@ function Login(props) {
     )
 }
 
-export default Login;
+function mapStateToProps({registerUser: {loggingIn}}){
+    return {
+        loggingIn
+    }
+}
+
+export default connect(mapStateToProps, {register})(Register);
