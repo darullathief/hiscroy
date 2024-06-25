@@ -14,7 +14,6 @@ function PrimaryButton(props) {
             width: "100%",
             padding: "12px",
             margin: "10px auto",
-            width: "100%",
             borderRadius: "15px",
             backgroundColor: "#BA5F3B",
             ':hover': {
